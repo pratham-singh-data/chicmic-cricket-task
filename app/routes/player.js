@@ -1,7 +1,7 @@
 const express = require("express");
 const Joi = require("joi");
 const { getPlayersData, editPlayersData } = require("../helper/fileDataManipulation");
-const { ExistingPlayerRegistration, SuccessfulPlayerRegistration } = require("../util/messages");
+const { ExistingPlayerRegistration, SuccessfulPlayerRegistration, ReadNonExistentUser } = require("../util/messages");
 const querystring = require("querystring")
 const router = express.Router({
     caseSensitive: true,
@@ -50,8 +50,22 @@ router.post("/", (req, res) => {
 })
 
 router.get("/", (req, res) => {
-    console.log((req.url.slice(req.url.indexOf("/?") + 2)));
-    res.send("Done");
+    const idToDisplay = querystring.parse(req.url.slice(req.url.indexOf("/?") + 2), "&", "=").id;
+
+    const fileData = getPlayersData();
+
+    if(! fileData[idToDisplay]) {
+        res.json({
+            statusCode: 400,
+            message: ReadNonExistentUser,
+        })
+        return;
+    }
+
+    res.json({
+        statusCode: 200,
+        data: fileData[idToDisplay],
+    })
 })
 
 module.exports = router;
