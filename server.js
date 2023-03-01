@@ -3,7 +3,12 @@ const express = require("express");
 const PlayerRouter = require("./app/routes/player");
 
 const app = express();
-app.use(express.json());
+app.use(express.json(), (err, req, res, next) => {
+    res.json({
+        statusCode: 400,
+        message: err.message,
+    })
+});
 
 app.use("/player", PlayerRouter)
 

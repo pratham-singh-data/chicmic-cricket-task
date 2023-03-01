@@ -10,8 +10,8 @@ const router = express.Router({
 const playerDataSchema = Joi.object({
     name: Joi.string().required(),
     team: Joi.string().required(),
-    id: Joi.string(),
-    type: Joi.string().valid("batsman", "baller", "all-rounder"),
+    id: Joi.string().required(),
+    type: Joi.string().valid("batsman", "baller", "all-rounder").required(),
 })
 
 router.post("/", (req, res) => {
