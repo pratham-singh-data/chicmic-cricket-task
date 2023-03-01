@@ -1,7 +1,8 @@
 const express = require("express");
 const Joi = require("joi");
-const { getGamesData, getConfigData, editConfigData, editGamesData } = require("../helper/fileDataManipulation");
-const { SuccessfulGameScheduling } = require("../util/messages");
+const { getGamesData, getConfigData, editConfigData, editGamesData, getTeamsData } = require("../helper/fileDataManipulation");
+const { SuccessfulGameScheduling, InvalidTeamsBoth } = require("../util/messages");
+const { route } = require("./player");
 
 const router = express.Router({
     caseSensitive: true,
@@ -29,10 +30,39 @@ router.post("/", (req, res) => {
         return;
     }
 
+    const teamsFileData = getTeamsData();
     const gamesFileData = getGamesData();
     const configFileData = getConfigData();
 
-    gamesFileData[configFileData.gamesId++] = body;
+    if(! teamsFileData[body.team1] && teamsFileData[body.team2]) {
+        res.json({
+            statusCode: 403,
+            message: `${body.team1} is not a registered team.`,
+        })
+        return;
+    }
+
+    if(! teamsFileData[body.team2] && teamsFileData[body.team1]) {
+        res.json({
+            statusCode: 403,
+            message: `${body.team2} is not a registered team.`,
+        })
+        return;
+    }
+
+    if(! teamsFileData[body.team1] && !teamsFileData[body.team2]) {
+        res.json({
+            statusCode: 403,
+            message: InvalidTeamsBoth,
+        })
+        return;
+    }
+
+    const gameId = configFileData.gamesId++;
+    gamesFileData[gameId] = body;
+
+    // initialise player data
+    body.team2Players = body.team1Players = {}
 
     editConfigData(configFileData);
     editGamesData(gamesFileData);
@@ -40,7 +70,14 @@ router.post("/", (req, res) => {
     res.json({
         statusCode: 200,
         message: SuccessfulGameScheduling,
+        gameId,
     })
 })
+
+// router.patch("/:id", (req, res) => {
+//     const {id: idToUpdate} = req.params;
+
+    
+// })
 
 module.exports = router;

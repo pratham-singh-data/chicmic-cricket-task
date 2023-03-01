@@ -1,6 +1,6 @@
 const express = require("express");
 const Joi = require("joi");
-const { getPlayersData, editPlayersData } = require("../helper/fileDataManipulation");
+const { getPlayersData, editPlayersData, getTeamsData, editTeamsData } = require("../helper/fileDataManipulation");
 const { ExistingPlayerRegistration, SuccessfulPlayerRegistration, ReadNonExistentUser } = require("../util/messages");
 const querystring = require("querystring")
 const router = express.Router({
@@ -28,9 +28,10 @@ router.post("/", (req, res) => {
         return;
     }
 
-    const fileData = getPlayersData();
+    const playersFileData = getPlayersData();
+    const teamsFileData = getTeamsData();
     
-    if(fileData[body.id]) {
+    if(playersFileData[body.id]) {
         res.json({
             statusCode: 403,
             message: ExistingPlayerRegistration,
@@ -38,10 +39,20 @@ router.post("/", (req, res) => {
         return;
     }
 
-    fileData[body.id] = body;
+    playersFileData[body.id] = body;
     body["no. of matches"] = 0;
 
-    editPlayersData(fileData);
+    if(teamsFileData[body.team]) {
+        teamsFileData[body.team][body.id] = Date.now();
+    }
+    else {
+        teamsFileData[body.team] = {
+            [body.id]: Date.now(),
+        }
+    }
+
+    editPlayersData(playersFileData);
+    editTeamsData(teamsFileData);
 
     res.json({
         statusCode: 200,
