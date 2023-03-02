@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { getPlayersData, getTeamsData, editPlayersData, editTeamsData } = require("../helper/fileDataManipulation");
+const { getPlayersData, editPlayersData } = require("../helper/fileDataManipulation");
 const { SuccessfulPlayerRegistration, ReadNonExistentPlayer } = require("../util/messages");
 const querystring = require("querystring");
 const uuid = require("uuid");
