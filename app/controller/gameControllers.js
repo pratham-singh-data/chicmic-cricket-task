@@ -3,6 +3,7 @@ const { getGamesData, getPlayersData, editGamesData, editBallsData, getBallsData
 const { sendResponse } = require("../util/sendResponse");
 const uuid = require("uuid");
 const { InvalidTeamMembers, SuccessfulGameScheduling, ReadNonExistentGame, DataSuccessfulUpdated, UnknownPlayerId, InvalidTeamPlacement, BallAlreadyRegistered, SuccessfulBallRegistration } = require("../util/messages");
+const querystring = require("querystring");
 
 const gameDataSchema = Joi.object({
     team1: Joi.string().required(),
@@ -257,8 +258,44 @@ function registerBall(req, res) {
     })
 }
 
+function getGame(req, res, next) {
+    const {id: idToDisplay} = querystring.parse(req.url.slice(req.url.indexOf("/?") + 2), "&", "=");
+
+    if(! idToDisplay) {
+        next();
+        return;
+    }
+
+    const gameFileData = getGamesData();
+
+    if(! gameFileData[idToDisplay]) {
+        res.sendResponse(res, {
+            statusCode: 403,
+            message: ReadNonExistentGame,
+        })
+
+        return;
+    }
+
+    sendResponse(res, {
+        statusCode: 200,
+        gameData: gameFileData[idToDisplay],
+    })
+}
+
+function getAllGames(req) {
+    const gameFileData = getGamesData();
+
+    sendResponse(req.res, {
+        statusCode: 200,
+        data: gameFileData,
+    })
+}
+
 module.exports = {
     scheduleGame,
     addPlayers,
     registerBall,
+    getGame,
+    getAllGames,
 }
