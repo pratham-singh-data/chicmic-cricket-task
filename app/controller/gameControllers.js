@@ -55,6 +55,14 @@ function scheduleGame(req, res) {
         gid = uuid.v4();
     }
 
+    if(iter > 10000) {
+        sendResponse(res, {
+            statusCode: 500,
+            message: "Unable to add data.",
+        })
+        return;
+    }
+
     // confirm that everyone is a valid player
     const invalidTeam1Players = body.team1Players.filter((inp) => ! playerFileData[inp] && body.team2Players.includes(inp));
     const invalidTeam2Players = body.team2Players.filter((inp) => ! playerFileData[inp] && body.team1Players.includes(inp));
@@ -212,6 +220,14 @@ function registerBall(req, res) {
     let iter = 0
     while(gameFileData[bid] && iter++ <= 10000) {
         bid = uuid.v4();
+    }
+
+    if(iter > 10000) {
+        sendResponse(res, {
+            statusCode: 500,
+            message: "Unable to add data.",
+        })
+        return;
     }
 
     if(gameData.balls[body.over]) {

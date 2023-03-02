@@ -14,6 +14,7 @@ app.use(express.json(), (err, req, res, next) => {
 
 app.use("/player", PlayerRouter);
 app.use("/game", GameRouter);
+
 app.all("*", (err, req, res, next) => {
     sendResponse(res, {
         statusCode: 500,
