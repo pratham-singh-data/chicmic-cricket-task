@@ -5,7 +5,6 @@ const router = express.Router({
 })
 
 router.post("/", addPlayer)
-
 router.get("/", readPlayer)
 
 module.exports = router;
