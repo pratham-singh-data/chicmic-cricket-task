@@ -2,7 +2,7 @@ const Joi = require("joi");
 const { getGamesData, getPlayersData, editGamesData } = require("../helper/fileDataManipulation");
 const { sendResponse } = require("../util/sendResponse");
 const uuid = require("uuid");
-const { InvalidTeamMembers, SuccessfulGameScheduling, ReadNonExistentGame } = require("../util/messages");
+const { InvalidTeamMembers, SuccessfulGameScheduling, ReadNonExistentGame, DataSuccessfulUpdated } = require("../util/messages");
 
 const gameDataSchema = Joi.object({
     team1: Joi.string().required(),
@@ -85,43 +85,54 @@ function scheduleGame(req, res) {
 } 
 
 function addPlayers(req, res) {
-    // let body;
+    let body;
 
-    // try {
-    //     body = Joi.attempt(req.body, addPlayersSchema);
-    // }
-    // catch(err) {
-    //     sendResponse(res, {
-    //         statusCode: 400,
-    //         message: err.message,
-    //     })
-    //     return;
-    // } 
+    try {
+        body = Joi.attempt(req.body, addPlayersSchema);
+    }
+    catch(err) {
+        sendResponse(res, {
+            statusCode: 400,
+            message: err.message,
+        })
+        return;
+    } 
 
-    // const {id: idToUpdate} = req.params;
-    // const gameFileData = getGamesData();
-    // const playerFileData = getPlayersData();
+    const {id: idToUpdate} = req.params;
+    const gameFileData = getGamesData();
+    const playerFileData = getPlayersData();
 
-    // const gameDataToUpdate = gameFileData[idToUpdate];
-    // // console.log(gameDataToUpdate)
+    const gameDataToUpdate = gameFileData[idToUpdate];
+    // console.log(gameDataToUpdate)
     
-    // if(! gameDataToUpdate) {
-    //     sendResponse(res, {
-    //         statusCode: 400,
-    //         message: ReadNonExistentGame,
-    //     })
-    //     return;
-    // }
+    if(! gameDataToUpdate) {
+        sendResponse(res, {
+            statusCode: 400,
+            message: ReadNonExistentGame,
+        })
+        return;
+    }
 
-    // const validTeam1Players = body.team1.filter(inp => ! gameDataToUpdate.team2Players[inp] && ! body.team2.includes(inp) && ! playerFileData[inp]);
-    // const validTeam2Players = body.team2.filter(inp => ! gameDataToUpdate.team1Players[inp] && ! body.team1.includes(inp) && ! playerFileData[inp]);
+    console.log(playerFileData["a52af7bc-6d78-4e12-bab5-84fab0ada954"])
 
-    // console.log(validTeam1Players)
-    // console.log(validTeam2Players)
-    
+    const validTeam1Players = body.team1.filter(inp => ! gameDataToUpdate.team2Players[inp] && ! body.team2.includes(inp) && playerFileData[inp]);
+    const validTeam2Players = body.team2.filter(inp => ! gameDataToUpdate.team1Players[inp] && ! body.team1.includes(inp) && playerFileData[inp]);
 
-    // console.log(gameFileData);
-    res.send("data")
+    validTeam1Players.forEach(inp => {
+        gameDataToUpdate.team1Players[inp] = Date.now();
+    })
+
+    validTeam2Players.forEach(inp => {
+        gameDataToUpdate.team2Players[inp] = Date.now();
+    })
+
+    editGamesData(gameFileData);
+
+    sendResponse(res, {
+        statusCode: 200,
+        message: DataSuccessfulUpdated,
+        data: gameDataToUpdate,
+    })
 }
 
 function addBall() {
