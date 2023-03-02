@@ -1,5 +1,5 @@
 const express = require("express");
-const { scheduleGame, addPlayers } = require("../controller/gameControllers");
+const { scheduleGame, addPlayers, registerBall } = require("../controller/gameControllers");
 require("../helper/fileDataManipulation");
 
 const router = express.Router({
@@ -8,6 +8,7 @@ const router = express.Router({
 
 
 router.post("/", scheduleGame);
+router.post("/ball/:id", registerBall);
 router.patch("/:id", addPlayers);
 
 module.exports = router;
