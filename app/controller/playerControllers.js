@@ -37,8 +37,17 @@ function addPlayer(req, res) {
     console.log(playerFileData)
     
     let uid = uuid.v4();
-    while(playerFileData[uid]) {
+    let iter = 0
+    while(playerFileData[uid] && iter++ <= 10000) {
         uid = uuid.v4();
+    }
+
+    if(iter > 10000) {
+        sendResponse(res, {
+            statusCode: 500,
+            message: "Unable to add data.",
+        })
+        return;
     }
 
     playerFileData[uid] = body;
