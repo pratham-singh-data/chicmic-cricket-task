@@ -6,7 +6,8 @@ const uuid = require("uuid");
 const { sendResponse } = require("../util/sendResponse");
 
 const playerDataSchema = Joi.object({
-    name: Joi.string().required(),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
     imageURL: Joi.string(),
     age: Joi.number().min(18).required(),
     type: Joi.string().valid("batsman", "baller", "all-rounder").required(),

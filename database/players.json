@@ -1,1 +1,162 @@
-{"544b8422-03c2-4513-bbaa-120ea9289e05":{"name":"ABC","age":18,"type":"batsman"},"e0b792cc-7b0b-461b-8e90-efa2d9f10f3c":{"name":"ABC","imageURL":"https://img-getpocket.cdn.mozilla.net/296x148/filters:format(jpeg):quality(60):no_upscale():strip_exif()/https%3A%2F%2Fs3.amazonaws.com%2Fpocket-curatedcorpusapi-prod-images%2Fb2508da1-4567-4abe-a1fd-fb1112625c4e.jpeg","age":18,"type":"batsman"},"eb172af2-5a67-4b2e-856f-e0c0bba14d64":{"name":"ABC","imageURL":"https://img-getpocket.cdn.mozilla.net/296x148/filters:format(jpeg):quality(60):no_upscale():strip_exif()/https%3A%2F%2Fs3.amazonaws.com%2Fpocket-curatedcorpusapi-prod-images%2Fb2508da1-4567-4abe-a1fd-fb1112625c4e.jpeg","age":18,"type":"batsman","runs":0,"wickets":0,"no_of_matches":0},"9b29f9cb-5f4e-4580-a037-ce22509f3594":{"name":"ABC","imageURL":"https://img-getpocket.cdn.mozilla.net/296x148/filters:format(jpeg):quality(60):no_upscale():strip_exif()/https%3A%2F%2Fs3.amazonaws.com%2Fpocket-curatedcorpusapi-prod-images%2Fb2508da1-4567-4abe-a1fd-fb1112625c4e.jpeg","age":18,"type":"batsman","runs":0,"wickets":0,"no_of_matches":0},"e62b4f59-43c0-4e0e-abb9-ada4b331f3af":{"name":"ABC","imageURL":"https://img-getpocket.cdn.mozilla.net/296x148/filters:format(jpeg):quality(60):no_upscale():strip_exif()/https%3A%2F%2Fs3.amazonaws.com%2Fpocket-curatedcorpusapi-prod-images%2Fb2508da1-4567-4abe-a1fd-fb1112625c4e.jpeg","age":18,"type":"batsman","runs":0,"wickets":0,"no_of_matches":0},"3feb720e-a5d7-4191-a479-635490252e2d":{"name":"ABC","imageURL":"https://img-getpocket.cdn.mozilla.net/296x148/filters:format(jpeg):quality(60):no_upscale():strip_exif()/https%3A%2F%2Fs3.amazonaws.com%2Fpocket-curatedcorpusapi-prod-images%2Fb2508da1-4567-4abe-a1fd-fb1112625c4e.jpeg","age":18,"type":"batsman","jerseyNo":5,"runs":0,"wickets":0,"no_of_matches":0}}
+{
+  "5beaa13b-1840-463d-840a-040a92ad88e5": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "d047b556-a0a0-42e7-acfa-39fa72d707f5": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "0cfe0a52-de9b-4339-b243-329a37337feb": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "71d4b23f-08e1-4793-bb5b-d9ffc1fa3973": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "bd22440c-3a18-4539-b1f4-82e92039ecaf": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "c341d674-4109-4d54-a518-ee62a581f98e": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "cfeb22b1-a187-4c79-bb80-3121e719a64e": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "869a096f-2d1f-453a-884a-9ebadaa68117": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "dfc659ea-606a-45e9-888d-95c846bb2cb5": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "f3641ae8-841d-4440-bb5d-9b8cefcc50b9": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "592cf817-e29b-4298-996f-c701792aa97b": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "e34a0d38-601b-444b-af7e-a042dce2c5a3": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "0fe34cdd-dd7e-456b-94cd-170168358d6a": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "b9ec9650-411e-4da7-8e43-fbb947218757": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "8f8b0cf1-a994-4b31-9e12-0319dfc01277": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  },
+  "4407974c-803e-44d7-8605-f383eec94e2b": {
+    "firstName": "ABC",
+    "lastName": "DEF",
+    "age": 18,
+    "type": "batsman",
+    "jerseyNo": 12,
+    "runs": 0,
+    "wickets": 0,
+    "no_of_matches": 0
+  }
+}
