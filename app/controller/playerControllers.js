@@ -79,10 +79,10 @@ function readPlayer(req, res, next) {
     })
 }
 
-function readAllPlayers(req, res) {
+function readAllPlayers(req) {
     const playerFileData = getPlayersData();
 
-    sendResponse(res, {
+    sendResponse(req.res, {
         statusCode: 200,
         data: playerFileData,
     })
