@@ -10,6 +10,7 @@ const playerDataSchema = Joi.object({
     imageURL: Joi.string(),
     age: Joi.number().min(18).required(),
     type: Joi.string().valid("batsman", "baller", "all-rounder").required(),
+    jerseyNo: Joi.number().required(),
 })
 
 function addPlayer(req, res) {
