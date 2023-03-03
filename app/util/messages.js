@@ -11,4 +11,5 @@ module.exports = {
     BallAlreadyRegistered: "This ball for this over is already registerred.",
     SuccessfulBallRegistration: "Ball successfully registered.",
     ReadNonExistentBall: "This ball does not exist.",
+    CredentialsIncorrect: "Credentials do not match",
 }

@@ -8,8 +8,8 @@ const querystring = require("querystring");
 const gameDataSchema = Joi.object({
     team1: Joi.string().required(),
     team2: Joi.string().required(),
-    team1Players: Joi.array().items(Joi.string()).min(3).required(),
-    team2Players: Joi.array().items(Joi.string()).min(3).required(),
+    team1Players: Joi.array().items(Joi.string()).min(11).required(),
+    team2Players: Joi.array().items(Joi.string()).min(11).required(),
     maxOvers: Joi.number().min(1),
     venue: Joi.string().required(),
     date: Joi.date().required(),
@@ -30,6 +30,19 @@ const registerBallSchema = Joi.object({
     runs: Joi.number().min(0).max(6).required(),
     playerOut: Joi.boolean().required(),
     wicketType: Joi.string().valid("lbw", "runOut", "caught", "stump", "bowled", "hitWicket"),
+})
+
+const updateBallSchema = Joi.object({
+    player_on_strike: Joi.string().required(),
+    player_on_side: Joi.string().disallow(Joi.ref("player_on_strike")).required(),
+    bowler: Joi.string().disallow(Joi.ref("player_on_strike"), Joi.ref("player_on_side")).required(),
+    ball: Joi.number().min(1).required(),
+    over: Joi.number().min(1).required(),
+    valid: Joi.string().valid("V", "W", "N").required(),
+    runs: Joi.number().min(0).max(6).required(),
+    playerOut: Joi.boolean().required(),
+    wicketType: Joi.string().valid("lbw", "runOut", "caught", "stump", "bowled", "hitWicket"),
+    gid: Joi.string().required(),
 })
 
 function scheduleGame(req, res) {
@@ -340,6 +353,128 @@ function deleteBall(req, res) {
     })
 }
 
+function updateBall(req, res) {
+    const {id: idToUpdate} = req.params;
+
+    const playerFileData = getPlayersData();
+    const ballFileData = getBallsData();
+    const gameFileData = getGamesData();
+
+    if(! ballFileData[idToUpdate]) {
+        sendResponse(res, {
+            statusCode: 403,
+            message: ReadNonExistentBall,
+        });
+
+        return;
+    }
+
+    const oldBallData = ballFileData[idToUpdate];
+
+    let body;
+
+    try {
+        body = Joi.attempt(req.body, updateBallSchema);
+    }
+    catch(err) {
+        sendResponse(res, {
+            statusCode: 400,
+            message: err.message,
+        })
+
+        return;
+    }
+
+    // check if both players exist
+    if(! playerFileData[body.player_on_strike] || ! playerFileData[body.player_on_side] || ! playerFileData[body.bowler]) {
+        sendResponse(res, {
+            statusCode: 403,
+            message: UnknownPlayerId,
+        })
+
+        return;
+    }
+
+    const {gid: gameIdToUpdate} = body;
+
+    // check if game exists
+    if(! gameFileData[gameIdToUpdate]) {
+        sendResponse(res, {
+            statusCode: 403,
+            message: ReadNonExistentGame,
+        })
+
+        return;
+    }
+
+    const gameData = gameFileData[gameIdToUpdate];
+
+    // check if striker, swide and bowler are actual players of the correct team
+    if(! ((gameData.team1Players[body.player_on_strike] && gameData.team1Players[body.player_on_side] && gameData.team2Players[body.bowler]) || (gameData.team2Players[body.player_on_strike] && gameData.team2Players[body.player_on_side] && gameData.team1Players[body.bowler]))) {
+        sendResponse(res, {
+            statusCode: 400,
+            message: InvalidTeamPlacement,
+        })
+        return;
+    }
+
+    // generate ballid
+    let { id: bid } = req.params;
+
+    delete gameData.balls[oldBallData.over][oldBallData.ball];
+
+    if(gameData.balls[body.over]) {
+        if(gameData.balls[body.over][body.ball]){
+            sendResponse(res, {
+                statusCode: 403,
+                message: BallAlreadyRegistered,
+            })
+            return;
+        }
+        else {
+            gameData.balls[body.over][body.ball] = bid;
+        }
+    }
+    else {
+        gameData.balls[body.over] = {
+            [body.ball]: bid,
+        }
+    }
+
+    // edit score
+    gameData.score[oldBallData.over] -= oldBallData.runs;
+
+    gameData.score[body.over] = gameData.score[body.over] ? gameData.score[body.over] + body.runs : body.runs;
+
+    // register wicket and runs
+    if(oldBallData.playerOut) { 
+        playerFileData[oldBallData.bowler].wickets--;
+    }
+    else {
+        playerFileData[oldBallData.player_on_strike].runs -= oldBallData.runs;
+    }
+
+    if(body.playerOut) { 
+        playerFileData[body.bowler].wickets++;
+    }
+    else {
+        playerFileData[body.player_on_strike].runs += body.runs;
+    }
+
+    console.log(body)
+
+    ballFileData[bid] = body;
+
+    editBallsData(ballFileData);
+    editGamesData(gameFileData);
+    editPlayersData(playerFileData);
+
+    sendResponse(res, {
+        statusCode: 200,
+        message: DataSuccessfulUpdated,
+    })
+}
+
 function getBall(req, res, next) {
     if(req.url.indexOf("?id=") === -1) {
         next();
@@ -392,4 +527,5 @@ module.exports = {
     getGame,
     getAllGames,
     deleteBall,
+    updateBall,
 }
