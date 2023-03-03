@@ -8,6 +8,7 @@ module.exports = {
     UnknownPlayerId: "Unknown playerId.",
     DistinctPlayersRequired: "All players must be unique",
     InvalidTeamPlacement: "Invalid team placement.",
-    BallAlreadyRegistered: "This baall for this over is already registerred.",
+    BallAlreadyRegistered: "This ball for this over is already registerred.",
     SuccessfulBallRegistration: "Ball successfully registered.",
+    ReadNonExistentBall: "This ball does not exist.",
 }

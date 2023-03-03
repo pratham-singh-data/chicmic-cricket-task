@@ -2,7 +2,7 @@ const Joi = require("joi");
 const { getGamesData, getPlayersData, editGamesData, editBallsData, getBallsData, editPlayersData } = require("../helper/fileDataManipulation");
 const { sendResponse } = require("../util/sendResponse");
 const uuid = require("uuid");
-const { InvalidTeamMembers, SuccessfulGameScheduling, ReadNonExistentGame, DataSuccessfulUpdated, UnknownPlayerId, InvalidTeamPlacement, BallAlreadyRegistered, SuccessfulBallRegistration } = require("../util/messages");
+const { InvalidTeamMembers, SuccessfulGameScheduling, ReadNonExistentGame, DataSuccessfulUpdated, UnknownPlayerId, InvalidTeamPlacement, BallAlreadyRegistered, SuccessfulBallRegistration, ReadNonExistentBall } = require("../util/messages");
 const querystring = require("querystring");
 
 const gameDataSchema = Joi.object({
@@ -23,12 +23,13 @@ const addPlayersSchema = Joi.object({
 const registerBallSchema = Joi.object({
     player_on_strike: Joi.string().required(),
     player_on_side: Joi.string().disallow(Joi.ref("player_on_strike")).required(),
-    baller: Joi.string().disallow(Joi.ref("player_on_strike"), Joi.ref("player_on_side")).required(),
+    bowler: Joi.string().disallow(Joi.ref("player_on_strike"), Joi.ref("player_on_side")).required(),
     ball: Joi.number().min(1).required(),
     over: Joi.number().min(1).required(),
     valid: Joi.string().valid("V", "W", "N").required(),
     runs: Joi.number().min(0).max(6).required(),
     playerOut: Joi.boolean().required(),
+    wicketType: Joi.string().valid("lbw", "runOut", "caught", "stump", "bowled", "hitWicket"),
 })
 
 function scheduleGame(req, res) {
@@ -47,14 +48,12 @@ function scheduleGame(req, res) {
 
     const gameFileData = getGamesData();
     const playerFileData = getPlayersData();
-    console.log(gameFileData)
     
     let gid = uuid.v4();
     let iter = 0
     while(gameFileData[gid] && iter++ <= 10000) {
         gid = uuid.v4();
     }
-
     if(iter > 10000) {
         sendResponse(res, {
             statusCode: 500,
@@ -183,7 +182,7 @@ function registerBall(req, res) {
     const ballFileData = getBallsData();
 
     // check if both players exist
-    if(! playerFileData[body.player_on_strike] || ! playerFileData[body.player_on_side] || ! playerFileData[body.baller]) {
+    if(! playerFileData[body.player_on_strike] || ! playerFileData[body.player_on_side] || ! playerFileData[body.bowler]) {
         sendResponse(res, {
             statusCode: 403,
             message: UnknownPlayerId,
@@ -206,8 +205,8 @@ function registerBall(req, res) {
 
     const gameData = gameFileData[gameIdToUpdate];
 
-    // check if striker, swide and baller are actual players of the correct team
-    if(! ((gameData.team1Players[body.player_on_strike] && gameData.team1Players[body.player_on_side] && gameData.team2Players[body.baller]) || (gameData.team2Players[body.player_on_strike] && gameData.team2Players[body.player_on_side] && gameData.team1Players[body.baller]))) {
+    // check if striker, swide and bowler are actual players of the correct team
+    if(! ((gameData.team1Players[body.player_on_strike] && gameData.team1Players[body.player_on_side] && gameData.team2Players[body.bowler]) || (gameData.team2Players[body.player_on_strike] && gameData.team2Players[body.player_on_side] && gameData.team1Players[body.bowler]))) {
         sendResponse(res, {
             statusCode: 400,
             message: InvalidTeamPlacement,
@@ -256,7 +255,7 @@ function registerBall(req, res) {
 
     // register wicket
     if(body.playerOut) { 
-        playerFileData[body.baller].wickets++;
+        playerFileData[body.bowler].wickets++;
     }
     else {
         playerFileData[body.player_on_strike].runs += body.runs;
@@ -299,6 +298,82 @@ function getGame(req, res, next) {
     })
 }
 
+function deleteBall(req, res) {
+    const {id: idToDelete} = req.params;
+
+    const playerFileData = getPlayersData();
+    const gameFileData = getGamesData();
+    const ballFileData = getBallsData();
+
+    if(! ballFileData[idToDelete]) {
+        sendResponse(res, {
+            statusCode: 403,
+            message: ReadNonExistentBall,
+        })
+        return;
+    }
+
+    const ballToDelete = ballFileData[idToDelete];
+    const relativeGame = gameFileData[ballToDelete.gid];
+    const relativeBowler = playerFileData[ballToDelete.bowler];
+    const relativeStriker = playerFileData[ballToDelete.player_on_strike];
+
+    // if player was out then remove their wicket
+    if(ballToDelete.playerOut) {
+        relativeBowler.wickets--;
+    }
+    else {
+        relativeStriker.runs -= ballToDelete.runs;
+    }
+
+    delete relativeGame.balls[ballToDelete.over][ballToDelete.ball];
+    delete ballFileData[idToDelete];
+    relativeGame.score[ballToDelete.over] -= ballToDelete.runs;
+
+    editBallsData(ballFileData);
+    editPlayersData(playerFileData);
+    editGamesData(gameFileData);
+
+    sendResponse(res, {
+        statusCode: 200,
+        message: DataSuccessfulUpdated,
+    })
+}
+
+function getBall(req, res, next) {
+    if(req.url.indexOf("?id=") === -1) {
+        next();
+        return;
+    }
+
+    const {id: idToDisplay} = querystring.parse(req.url.slice(req.url.indexOf("?id=") + 1));
+
+    const ballFileData = getBallsData();
+
+    if(! ballFileData[idToDisplay]) {
+        sendResponse(res, {
+            statusCode: 403,
+            message: ReadNonExistentBall,
+        })
+
+        return;
+    }
+
+    sendResponse(res, {
+        statusCode: 200,
+        data: ballFileData[idToDisplay],
+    })
+}
+
+function getAllBalls(req) {
+    const ballFileData = getBallsData();
+
+    sendResponse(req.res, {
+        statusCode: 200,
+        data: ballFileData,
+    })
+}
+
 function getAllGames(req) {
     const gameFileData = getGamesData();
 
@@ -312,6 +387,9 @@ module.exports = {
     scheduleGame,
     addPlayers,
     registerBall,
+    getBall,
+    getAllBalls,
     getGame,
     getAllGames,
+    deleteBall,
 }
