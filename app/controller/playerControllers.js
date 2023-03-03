@@ -35,7 +35,6 @@ function addPlayer(req, res) {
     }
 
     const playerFileData = getPlayersData();
-    console.log(playerFileData)
     
     let uid = uuid.v4();
     let iter = 0

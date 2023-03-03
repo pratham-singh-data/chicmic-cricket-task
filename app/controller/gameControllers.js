@@ -140,7 +140,6 @@ function addPlayers(req, res) {
     const playerFileData = getPlayersData();
 
     const gameDataToUpdate = gameFileData[idToUpdate];
-    // console.log(gameDataToUpdate)
     
     if(! gameDataToUpdate) {
         sendResponse(res, {
@@ -149,8 +148,6 @@ function addPlayers(req, res) {
         })
         return;
     }
-
-    console.log(playerFileData["a52af7bc-6d78-4e12-bab5-84fab0ada954"])
 
     const validTeam1Players = body.team1.filter(inp => ! gameDataToUpdate.team2Players[inp] && ! gameDataToUpdate.team1Players[inp] && ! body.team2.includes(inp) && playerFileData[inp]);
     const validTeam2Players = body.team2.filter(inp => ! gameDataToUpdate.team1Players[inp] && ! gameDataToUpdate.team2Players[inp] && ! body.team1.includes(inp) && playerFileData[inp]);
@@ -460,8 +457,6 @@ function updateBall(req, res) {
     else {
         playerFileData[body.player_on_strike].runs += body.runs;
     }
-
-    console.log(body)
 
     ballFileData[bid] = body;
 
