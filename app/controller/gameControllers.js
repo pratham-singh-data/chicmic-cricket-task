@@ -236,7 +236,6 @@ function registerBall(req, res) {
     }
 
     // do not proceed if there are six valid balls in given over
-    // console.log(gameData.validBalls[body.over] );
     if (gameData.validBalls[body.over] >= 6) {
         sendResponse(res, {
             statusCode: 403,
@@ -342,6 +341,11 @@ function deleteBall(req, res) {
         relativeStriker.runs -= ballToDelete.runs;
     }
 
+    // remove valid ball
+    if (ballToDelete.valid === `V`) {
+        relativeGame.validBalls[ballToDelete.over]--;
+    }
+
     delete relativeGame.balls[ballToDelete.over][ballToDelete.ball];
     delete ballFileData[idToDelete];
     relativeGame.score[ballToDelete.over] -= ballToDelete.runs;
@@ -433,7 +437,6 @@ function updateBall(req, res) {
 
     const { id: bid, } = req.params;
 
-    console.log(oldGameData);
     delete oldGameData.balls[oldBallData.over][oldBallData.ball];
 
     if (newGameData.balls[body.over]) {
@@ -480,10 +483,17 @@ function updateBall(req, res) {
         return;
     }
 
-    oldGameData.validBalls[oldBallData.over]--;
-    newGameData.validBalls[body.over] = newGameData.validBalls[body.over] ?
-        newGameData.validBalls[body.over] + 1 :
-        1;
+    if (oldBallData.valid === `V`) {
+        oldGameData.validBalls[oldBallData.over]--;
+    }
+
+    if (body.valid === `V`) {
+        newGameData.validBalls[body.over] = newGameData.validBalls[body.over] ?
+            newGameData.validBalls[body.over] + 1 :
+            1;
+    }
+
+    newGameData.balls[body.over][body.ball] = bid;
 
     ballFileData[bid] = body;
 
