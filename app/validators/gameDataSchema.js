@@ -1,5 +1,5 @@
 const Joi = require(`joi`);
-const MINPLAYERREQ = 11;
+const { MINPLAYERREQ, } = require('../util/constants');
 
 const gameDataSchema = Joi.object({
     team1: Joi.string().required(),

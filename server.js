@@ -4,6 +4,7 @@ const PlayerRouter = require(`./app/routes/player`);
 const GameRouter = require(`./app/routes/game`);
 const UserRouter = require(`./app/routes/users`);
 const { sendResponse, } = require(`./app/util/sendResponse`);
+const { checkAuthToken, } = require('./app/helper/checkAuthToken');
 
 const app = express();
 app.use(express.json(), (err, req, res, next) => {
@@ -12,6 +13,8 @@ app.use(express.json(), (err, req, res, next) => {
         message: err.message,
     });
 });
+
+app.use(`*`, checkAuthToken);
 
 app.use(`/player`, PlayerRouter);
 app.use(`/game`, GameRouter);

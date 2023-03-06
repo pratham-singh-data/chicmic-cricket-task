@@ -16,4 +16,6 @@ module.exports = {
     OverLimitReached: `Over-limit for this game has reached.`,
     RegisteredEmail: `This email is already registered.`,
     CredentialDoNotMatch: `Email and Password do not match`,
+    ReadNonExistentUser: `This user does not exist.`,
+    InvalidPhoneNumberError: `Not a valid phone number.`,
 };
