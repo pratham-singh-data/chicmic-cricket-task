@@ -2,7 +2,8 @@ const Joi = require(`joi`);
 const { getPlayersData,
     editPlayersData, } = require(`../helper/fileDataManipulation`);
 const { SuccessfulPlayerRegistration,
-    ReadNonExistentPlayer, } = require(`../util/messages`);
+    ReadNonExistentPlayer,
+    UnableToAddData, } = require(`../util/messages`);
 const querystring = require(`querystring`);
 const uuid = require(`uuid`);
 const { sendResponse, } = require(`../util/sendResponse`);
@@ -44,7 +45,7 @@ function addPlayer(req, res) {
     if (iter > 10000) {
         sendResponse(res, {
             statusCode: 500,
-            message: `Unable to add data.`,
+            message: UnableToAddData,
         });
         return;
     }

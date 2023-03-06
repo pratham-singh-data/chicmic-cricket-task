@@ -6,10 +6,11 @@ module.exports = {
     ReadNonExistentGame: `This game does not exist.`,
     DataSuccessfulUpdated: `Data is successfully updated.`,
     UnknownPlayerId: `Unknown playerId.`,
-    DistinctPlayersRequired: `All players must be unique`,
+    DistinctPlayersRequired: `All players must be unique.`,
     InvalidTeamPlacement: `Invalid team placement.`,
     BallAlreadyRegistered: `This ball for this over is already registerred.`,
     SuccessfulBallRegistration: `Ball successfully registered.`,
     ReadNonExistentBall: `This ball does not exist.`,
-    CredentialsIncorrect: `Credentials do not match`,
+    CredentialsIncorrect: `Credentials do not match.`,
+    UnableToAddData: `Unable to add data.`,
 };

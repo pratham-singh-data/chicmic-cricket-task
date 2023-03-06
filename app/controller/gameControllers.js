@@ -15,7 +15,8 @@ const { InvalidTeamMembers,
     InvalidTeamPlacement,
     BallAlreadyRegistered,
     SuccessfulBallRegistration,
-    ReadNonExistentBall, } = require(`../util/messages`);
+    ReadNonExistentBall,
+    UnableToAddData, } = require(`../util/messages`);
 const querystring = require(`querystring`);
 const { gameDataSchema, } = require(`../validators/gameDataSchema`);
 const { addPlayersSchema, } = require(`../validators/addPlayersSchema`);
@@ -52,7 +53,7 @@ function scheduleGame(req, res) {
     if (iter > 10000) {
         sendResponse(res, {
             statusCode: 500,
-            message: `Unable to add data.`,
+            message: UnableToAddData,
         });
         return;
     }
@@ -241,7 +242,7 @@ function registerBall(req, res) {
     if (iter > 10000) {
         sendResponse(res, {
             statusCode: 500,
-            message: `Unable to add data.`,
+            message: UnableToAddData,
         });
         return;
     }
