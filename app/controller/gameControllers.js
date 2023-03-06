@@ -236,7 +236,8 @@ function registerBall(req, res) {
     }
 
     // do not proceed if there are six valid balls in given over
-    if (gameData.validBalls[body.over] > 6) {
+    // console.log(gameData.validBalls[body.over] );
+    if (gameData.validBalls[body.over] >= 6) {
         sendResponse(res, {
             statusCode: 403,
             message: OverLimitReached,
@@ -378,6 +379,7 @@ function updateBall(req, res) {
     }
 
     const oldBallData = ballFileData[idToUpdate];
+    const oldGameData = gameFileData[oldBallData.gid];
 
     let body;
 
@@ -413,15 +415,15 @@ function updateBall(req, res) {
         return;
     }
 
-    const gameData = gameFileData[gameIdToUpdate];
+    const newGameData = gameFileData[gameIdToUpdate];
 
     // check if striker, swide and bowler are actual players of the correct team
-    if (! ((gameData.team1Players[body.playerOnStrike] &&
-                gameData.team1Players[body.playerOnSide] &&
-                gameData.team2Players[body.bowler]) ||
-            (gameData.team2Players[body.playerOnStrike] &&
-                gameData.team2Players[body.playerOnSide] &&
-                gameData.team1Players[body.bowler]))) {
+    if (! ((newGameData.team1Players[body.playerOnStrike] &&
+                newGameData.team1Players[body.playerOnSide] &&
+                newGameData.team2Players[body.bowler]) ||
+            (newGameData.team2Players[body.playerOnStrike] &&
+                newGameData.team2Players[body.playerOnSide] &&
+                newGameData.team1Players[body.bowler]))) {
         sendResponse(res, {
             statusCode: 400,
             message: InvalidTeamPlacement,
@@ -431,32 +433,33 @@ function updateBall(req, res) {
 
     const { id: bid, } = req.params;
 
-    delete gameData.balls[oldBallData.over][oldBallData.ball];
+    console.log(oldGameData);
+    delete oldGameData.balls[oldBallData.over][oldBallData.ball];
 
-    if (gameData.balls[body.over]) {
-        if (gameData.balls[body.over][body.ball]) {
+    if (newGameData.balls[body.over]) {
+        if (newGameData.balls[body.over][body.ball]) {
             sendResponse(res, {
                 statusCode: 403,
                 message: BallAlreadyRegistered,
             });
             return;
         } else {
-            gameData.balls[body.over][body.ball] = bid;
+            newGameData.balls[body.over][body.ball] = bid;
         }
     } else {
-        gameData.balls[body.over] = {
+        newGameData.balls[body.over] = {
             [body.ball]: bid,
         };
     }
 
     // edit score
-    gameData.score[oldBallData.over] -= oldBallData.runs;
+    oldGameData.score[oldBallData.over] -= oldBallData.runs;
 
-    gameData.score[body.over] = gameData.score[body.over] ?
-        gameData.score[body.over] + body.runs :
+    newGameData.score[body.over] = newGameData.score[body.over] ?
+        newGameData.score[body.over] + body.runs :
         body.runs;
 
-    // register wicket and runs
+    // // register wicket and runs
     if (oldBallData.playerOut) {
         playerFileData[oldBallData.bowler].wickets--;
     } else {
@@ -468,6 +471,19 @@ function updateBall(req, res) {
     } else {
         playerFileData[body.playerOnStrike].runs += body.runs;
     }
+
+    if (newGameData.validBalls[body.over] >= 6) {
+        sendResponse(res, {
+            statusCode: 403,
+            message: OverLimitReached,
+        });
+        return;
+    }
+
+    oldGameData.validBalls[oldBallData.over]--;
+    newGameData.validBalls[body.over] = newGameData.validBalls[body.over] ?
+        newGameData.validBalls[body.over] + 1 :
+        1;
 
     ballFileData[bid] = body;
 
