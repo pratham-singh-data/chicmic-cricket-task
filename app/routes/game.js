@@ -9,7 +9,6 @@ const { scheduleGame,
     deleteBall,
     updateBall,
     setTossInformation, } = require(`../controller/gameControllers`);
-require(`../helper/fileDataManipulation`);
 
 // eslint-disable-next-line new-cap
 const router = express.Router({
