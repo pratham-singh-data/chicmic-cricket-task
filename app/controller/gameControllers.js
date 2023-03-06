@@ -194,8 +194,8 @@ function registerBall(req, res) {
     const ballFileData = getBallsData();
 
     // check if both players exist
-    if (! playerFileData[body.player_on_strike] ||
-        ! playerFileData[body.player_on_side] ||
+    if (! playerFileData[body.playerOnStrike] ||
+        ! playerFileData[body.playerOnSide] ||
         ! playerFileData[body.bowler]) {
         sendResponse(res, {
             statusCode: 403,
@@ -218,11 +218,11 @@ function registerBall(req, res) {
     const gameData = gameFileData[gameIdToUpdate];
 
     // check if striker, swide and bowler are actual players of the correct team
-    if (! ((gameData.team1Players[body.player_on_strike] &&
-            gameData.team1Players[body.player_on_side] &&
+    if (! ((gameData.team1Players[body.playerOnStrike] &&
+            gameData.team1Players[body.playerOnSide] &&
             gameData.team2Players[body.bowler]) ||
-        (gameData.team2Players[body.player_on_strike] &&
-            gameData.team2Players[body.player_on_side] &&
+        (gameData.team2Players[body.playerOnStrike] &&
+            gameData.team2Players[body.playerOnSide] &&
             gameData.team1Players[body.bowler]))) {
         sendResponse(res, {
             statusCode: 400,
@@ -274,7 +274,7 @@ function registerBall(req, res) {
     if (body.playerOut) {
         playerFileData[body.bowler].wickets++;
     } else {
-        playerFileData[body.player_on_strike].runs += body.runs;
+        playerFileData[body.playerOnStrike].runs += body.runs;
     }
 
     editBallsData(ballFileData);
@@ -313,7 +313,7 @@ function deleteBall(req, res) {
     const ballToDelete = ballFileData[idToDelete];
     const relativeGame = gameFileData[ballToDelete.gid];
     const relativeBowler = playerFileData[ballToDelete.bowler];
-    const relativeStriker = playerFileData[ballToDelete.player_on_strike];
+    const relativeStriker = playerFileData[ballToDelete.playerOnStrike];
 
     // if player was out then remove their wicket
     if (ballToDelete.playerOut) {
@@ -373,8 +373,8 @@ function updateBall(req, res) {
     }
 
     // check if both players exist
-    if (! playerFileData[body.player_on_strike] ||
-        ! playerFileData[body.player_on_side] ||
+    if (! playerFileData[body.playerOnStrike] ||
+        ! playerFileData[body.playerOnSide] ||
         ! playerFileData[body.bowler]) {
         sendResponse(res, {
             statusCode: 403,
@@ -397,11 +397,11 @@ function updateBall(req, res) {
     const gameData = gameFileData[gameIdToUpdate];
 
     // check if striker, swide and bowler are actual players of the correct team
-    if (! ((gameData.team1Players[body.player_on_strike] &&
-                gameData.team1Players[body.player_on_side] &&
+    if (! ((gameData.team1Players[body.playerOnStrike] &&
+                gameData.team1Players[body.playerOnSide] &&
                 gameData.team2Players[body.bowler]) ||
-            (gameData.team2Players[body.player_on_strike] &&
-                gameData.team2Players[body.player_on_side] &&
+            (gameData.team2Players[body.playerOnStrike] &&
+                gameData.team2Players[body.playerOnSide] &&
                 gameData.team1Players[body.bowler]))) {
         sendResponse(res, {
             statusCode: 400,
@@ -442,13 +442,13 @@ function updateBall(req, res) {
     if (oldBallData.playerOut) {
         playerFileData[oldBallData.bowler].wickets--;
     } else {
-        playerFileData[oldBallData.player_on_strike].runs -= oldBallData.runs;
+        playerFileData[oldBallData.playerOnStrike].runs -= oldBallData.runs;
     }
 
     if (body.playerOut) {
         playerFileData[body.bowler].wickets++;
     } else {
-        playerFileData[body.player_on_strike].runs += body.runs;
+        playerFileData[body.playerOnStrike].runs += body.runs;
     }
 
     ballFileData[bid] = body;

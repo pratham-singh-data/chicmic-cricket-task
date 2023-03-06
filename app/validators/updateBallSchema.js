@@ -1,14 +1,14 @@
 const Joi = require(`joi`);
 
 const updateBallSchema = Joi.object({
-    player_on_strike: Joi.string().required(),
-    player_on_side: Joi.
+    playerOnStrike: Joi.string().required(),
+    playerOnSide: Joi.
         string().
-        disallow(Joi.ref(`player_on_strike`)).
+        disallow(Joi.ref(`playerOnStrike`)).
         required(),
     bowler: Joi.
         string().
-        disallow(Joi.ref(`player_on_strike`), Joi.ref(`player_on_side`)).
+        disallow(Joi.ref(`playerOnStrike`), Joi.ref(`playerOnSide`)).
         required(),
     ball: Joi.number().min(1).required(),
     over: Joi.number().min(1).required(),
