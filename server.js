@@ -2,6 +2,7 @@ require(`dotenv`).config();
 const express = require(`express`);
 const PlayerRouter = require(`./app/routes/player`);
 const GameRouter = require(`./app/routes/game`);
+const UserRouter = require(`./app/routes/users`);
 const { sendResponse, } = require(`./app/util/sendResponse`);
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json(), (err, req, res, next) => {
 
 app.use(`/player`, PlayerRouter);
 app.use(`/game`, GameRouter);
+app.use(`/user`, UserRouter);
 
 app.all(`*`, (err, req, res, next) => {
     sendResponse(res, {

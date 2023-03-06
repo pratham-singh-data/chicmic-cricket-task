@@ -215,8 +215,19 @@
     "maxOvers": 20,
     "venue": "Joi.string().required()",
     "date": "2322-02-05T19:45:11.111Z",
-    "balls": {},
-    "score": {},
+    "balls": {
+      "1": {
+        "1": "e2639a38-0c14-44cb-a038-c90303edc265",
+        "2": "d0c4c97d-4758-4910-be01-00f8b8945dd5",
+        "3": "a514c432-d5b9-4949-9386-82e283220eda",
+        "4": "14313a41-e6e5-4dc3-9dad-f972925dfb7d",
+        "5": "fbfc1d6e-296f-47fd-ac25-d7d3e466fe52",
+        "6": "6a30a7c9-121b-444a-bbd8-7bbf13f865a4",
+        "7": "e51229b7-1285-443b-88b8-6dd433930c5d",
+        "8": "80a5eff8-cc76-4564-bd08-91a6c1e2cbaf"
+      }
+    },
+    "score": { "1": 16 },
     "validBalls": {},
     "toss": 1,
     "firstBatter": 2

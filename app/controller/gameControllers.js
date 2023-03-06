@@ -16,7 +16,8 @@ const { InvalidTeamMembers,
     BallAlreadyRegistered,
     SuccessfulBallRegistration,
     ReadNonExistentBall,
-    UnableToAddData, } = require(`../util/messages`);
+    UnableToAddData,
+    OverLimitReached, } = require(`../util/messages`);
 const querystring = require(`querystring`);
 const { gameDataSchema, } = require(`../validators/gameDataSchema`);
 const { addPlayersSchema, } = require(`../validators/addPlayersSchema`);
@@ -234,6 +235,15 @@ function registerBall(req, res) {
         return;
     }
 
+    // do not proceed if there are six valid balls in given over
+    if (gameData.validBalls[body.over] > 6) {
+        sendResponse(res, {
+            statusCode: 403,
+            message: OverLimitReached,
+        });
+        return;
+    }
+
     // generate ballid
     let bid = uuid.v4();
     let iter = 0;
@@ -278,6 +288,12 @@ function registerBall(req, res) {
         playerFileData[body.bowler].wickets++;
     } else {
         playerFileData[body.playerOnStrike].runs += body.runs;
+    }
+
+    if (body.valid === `V`) {
+        gameData.validBalls[body.over] = gameData.validBalls[body.over] ?
+            ++gameData.validBalls[body.over] :
+            1;
     }
 
     editBallsData(ballFileData);
@@ -413,7 +429,6 @@ function updateBall(req, res) {
         return;
     }
 
-    // generate ballid
     const { id: bid, } = req.params;
 
     delete gameData.balls[oldBallData.over][oldBallData.ball];

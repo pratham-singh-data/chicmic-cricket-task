@@ -3,6 +3,7 @@ const { readFileSync, writeFileSync, } = require(`fs`);
 const PLAYERDATAURL = `./database/players.json`;
 const GAMESDATAURL = `./database/games.json`;
 const BALLSDATAURL = `./database/balls.json`;
+const USERSDATAURL = `./database/users.json`;
 
 /**
  * Read and return data in file at url.
@@ -72,6 +73,22 @@ function editBallsData(data) {
     editData(BALLSDATAURL, data);
 }
 
+/**
+ * Read and return data in users file.
+ * @return {JSON} data in users file
+ */
+function getUsersData() {
+    return JSON.parse(readData(USERSDATAURL));
+}
+
+/**
+ * Edits data in users file synchronously.
+ * @param {JSON} data data to put in users file
+ */
+function editUsersData(data) {
+    editData(USERSDATAURL, data);
+}
+
 module.exports = {
     getPlayersData,
     editPlayersData,
@@ -79,4 +96,6 @@ module.exports = {
     editGamesData,
     getBallsData,
     editBallsData,
+    getUsersData,
+    editUsersData,
 };

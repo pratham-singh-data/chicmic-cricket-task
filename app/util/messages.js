@@ -13,4 +13,7 @@ module.exports = {
     ReadNonExistentBall: `This ball does not exist.`,
     CredentialsIncorrect: `Credentials do not match.`,
     UnableToAddData: `Unable to add data.`,
+    OverLimitReached: `Over-limit for this game has reached.`,
+    RegisteredEmail: `This email is already registered.`,
+    CredentialDoNotMatch: `Email and Password do not match`,
 };
