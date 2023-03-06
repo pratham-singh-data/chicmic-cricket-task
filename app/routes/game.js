@@ -7,7 +7,8 @@ const { scheduleGame,
     getAllBalls,
     getBall,
     deleteBall,
-    updateBall, } = require(`../controller/gameControllers`);
+    updateBall,
+    setTossInformation, } = require(`../controller/gameControllers`);
 require(`../helper/fileDataManipulation`);
 
 // eslint-disable-next-line new-cap
@@ -21,6 +22,7 @@ router.post(`/`, scheduleGame);
 router.post(`/ball/:id`, registerBall);
 router.get(`/ball`, getBall, getAllBalls),
 router.delete(`/ball/:id`, deleteBall);
+router.patch(`/toss/:id`, setTossInformation);
 router.put(`/ball/:id`, updateBall);
 router.patch(`/:id`, addPlayers);
 

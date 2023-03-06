@@ -22,6 +22,7 @@ const { gameDataSchema, } = require(`../validators/gameDataSchema`);
 const { addPlayersSchema, } = require(`../validators/addPlayersSchema`);
 const { registerBallSchema, } = require(`../validators/registerBallSchema`);
 const { updateBallSchema, } = require(`../validators/updateBallSchema`);
+const { tossRegisterSchema, } = require('../validators/tossRegisterSchema');
 
 /**
  * Registers a game in the database.
@@ -78,6 +79,7 @@ function scheduleGame(req, res) {
 
     body.balls = {};
     body.score = {};
+    body.validBalls = {};
 
     const team1Players = {};
     const team2Players = {};
@@ -465,6 +467,51 @@ function updateBall(req, res) {
 }
 
 /**
+ * Update toss info for a game
+ * @param {Request} req express request object
+ * @param {Response} res express response object
+ * @param {next} next express next function
+ */
+function setTossInformation(req, res, next) {
+    let body;
+
+    try {
+        body = Joi.attempt(req.body, tossRegisterSchema);
+    } catch (err) {
+        sendResponse(res, {
+            statusCode: 400,
+            message: err.message,
+        });
+        return;
+    }
+
+    const { id: gameIdToUpdate, } = req.params;
+
+    const gameFileData = getGamesData();
+
+    const gameData = gameFileData[gameIdToUpdate];
+
+    if (! gameData) {
+        sendResponse(res, {
+            statusCode: 403,
+            message: ReadNonExistentGame,
+        });
+        return;
+    }
+
+    gameData.toss = body.toss;
+    gameData.firstBatter = body.firstBatter;
+
+    editGamesData(gameFileData);
+
+    sendResponse(res, {
+        statusCode: 200,
+        message: DataSuccessfulUpdated,
+        gameData,
+    });
+}
+
+/**
  * Retuns data of one ball to the client
  * @param {Request} req express request object
  * @param {Response} res express response object
@@ -565,4 +612,5 @@ module.exports = {
     getAllGames,
     deleteBall,
     updateBall,
+    setTossInformation,
 };
